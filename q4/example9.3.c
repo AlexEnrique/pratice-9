@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   // The Intermediates elements of __Temp are always calculated
 
   int count = 0; // this counter is used below to avoid swapping Temp and __Temp unnecessarily for each iteration
-  do { // using do {...} while (...) to accept tEnd = 0.0 as possible argument
+  do { // using do {...} while (...) to accept tEnd = 0.0 as a possible argument
     if (count % 2 == 0) {
       for (int i = (0 + 1); i < (Ngrid - 1); i++) {
         __Temp[i] = Temp[i] + c * (Temp[i+1] + Temp[i-1] - 2 * Temp[i]);
