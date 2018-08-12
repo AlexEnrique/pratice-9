@@ -10,9 +10,9 @@ double getMaxAbs(double **phi, int M);
 
 int main() {
   // Constants
-  int M = 100;           // Grid
-  // double V = 0.0;     // Voltage at walls (unuseful - see line 17)
-  double target = 1e-6;  // Target accuracy
+  int M = 100;                // Grid
+  // double phiBroder = 0.0;  // Voltage at walls (unuseful - see line 17)
+  double target = 1e-6;       // Target accuracy
 
   // calloc() initialize with 0's (we don't need to fill the walls's elements with V = 0.0)
   double **phi = calloc((M+1), sizeof(*phi));

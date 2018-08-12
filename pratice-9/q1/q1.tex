@@ -1,0 +1,114 @@
+\input{../../std.tex}
+\newenvironment{tk3} {
+\tikzstyle{loop} = [regular polygon, regular polygon sides=6, shape aspect=0.3, minimum width=1cm, minimum height=1cm, draw,scale=.7, align=center, text width=0.9	cm, fill = blue!15]
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=.7cm,text centered, draw=black, fill=red!30, text width = 7cm]
+
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30, text width = 5.5cm]
+
+\tikzstyle{processSmall} = [rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black, fill=orange!30, text width = 2cm]
+
+\tikzstyle{decision} = [diamond, draw, fill=yellow!30,
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+
+\tikzstyle{line} = [draw, -latex']
+
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, minimum height=2em, text width = 4cm]
+
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=-70, text centered, text width = 3.5cm, minimum height=1cm, minimum width=2cm, draw=black, fill=blue!30]
+
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{line} = [draw, -latex', thick,->,>=stealth]
+} {  }
+
+
+\begin{document}
+  \PraticeQuestion{9}{1}
+
+  The program \texttt{laplace.py} aims to solve the \textit{Laplace's Equation}, $\laplacian{\phi} = 0$, for an electrostatic potential $\phi$ on a square plate, subject to the boundary conditions
+  \begin{equation*}
+    \begin{cases}
+      \phi = 1.0 V \qc x = 0, \\
+      \phi = 0.0 V \qc x = L, \ y = 0, \qor y = L.
+    \end{cases}
+  \end{equation*}
+
+  The program makes use of \textit{divided differences method} to solve the equation. In two dimensions, the equation takes the form
+  \begin{equation}
+    \pdv[2]{\phi}{x} + \pdv[2]{\phi}{y} = 0.
+    \label{eq:1}
+  \end{equation}
+  Our method consists of dividing the domain of $\phi$ (the square plate) into a grid of small squares\footnote{It could be another form insted of squares.} and using the approximation for the derivative via Taylor expansion, truncaded at first order:
+  \begin{equation*}
+    \pdv[2]{\phi}{x} (x,y) = \frac{\phi(x - a, y) + \phi(x + a, y) - 2 \phi (x, y)}{a^2},
+  \end{equation*}
+  and the same for the $y$ variable. Using this and putting into the equation (\ref{eq:1}), we have
+  \begin{equation*}
+    \frac{1}{a^2} \qty[\phi(x - a, y) + \phi(x + a, y) + \phi(x, y - a) + \phi(x, y + a) - 4 \phi (x, y)] = 0,
+  \end{equation*}
+  and, rearranging,
+  \begin{equation}
+    \phi(x,y) = \frac{1}{4} \qty[\phi(x - a, y) + \phi(x + a, y) + \phi(x, y - a) + \phi(x, y + a)].
+    \label{eq:2}
+  \end{equation}
+
+  Because we divided the domain into small squares, the $(x,y)$ point can be interpreted as a center of a square with side length equal to $a$. So, $(x+a,y)$, $(x-a,y)$, $(x,y-a)$ and $(x, y + a)$ are the first (squares) neighbors.
+
+  Equation (\ref{eq:2}) enables us to solve the problem. We fix the potential at the boundaries and guess the values\footnote{It does not need to be acurated.} of $\phi$ as a first to calculate new values for the potential $\phi^\prime$ via (\ref{eq:2}), where $\phi^\prime$ is the left hand side and the right hand side we use the values of phi. After the calculations, we set $\phi \texttt{[} \texttt{]} \texttt{[} \texttt{]} = \phi^\prime \texttt{[} \texttt{]} \texttt{[} \texttt{]}$ and iterate over and over. This method is known as \textit{Jacobi Method}.
+
+  We can chose between several stop conditions for the program. The used in \texttt{laplace.py} is that the maximum diference between $\phi$ and $\phi^\prime$ be lass than a target value (the target accuracy defined at line 7).
+
+  The flowchart on the next page shows more explicitly the process explained above.
+
+  Running the program, we get a graph. The picture produced is displayed below.
+
+  \begin{figure}[h]
+    \center
+    \includegraphics[scale = .8]{../Figure1.png}
+    \caption{Solution for equation (\ref{eq:1})}.
+  \end{figure}
+
+
+  \newpage
+  \begin{figure}[h]
+    \center
+    \begin{tk3}
+      \begin{tikzpicture}[node distance = 15mm, auto]
+        \node (start) [startstop] {Program \texttt{laplace.py}};
+        \node (constants) [process, below of = start, yshift = 2mm] {Define some constants for the programa: \texttt{a}, \texttt{delta}, \texttt{target}, \texttt{L $\leftarrow$ (M+1)a}};
+        \node (initialize) [process, below of = constants, yshift = -3mm] {Initialize the matrix $\phi \texttt{[} \texttt{]} \texttt{[} \texttt{]}$ with zeros, except for the elements subject to the boundary conditions};
+
+        % Whiles and loops
+        \node (targetLoop) [decision, below of = initialize, xshift = -57mm, yshift = 10mm] {$\texttt{delta} > \texttt{target}$ ?};
+        \node (forLoop) [process, right of = targetLoop, yshift = 0mm, xshift = 42mm] { \texttt{x = 0; while (x < L)} \\ \texttt{y = 0; while (y < L) } };
+
+        \node (PhiPrime) [process, below of = forLoop, xshift = 10mm] {Calculate $\phi^\prime[\texttt{x}][\texttt{y}]$ via (\ref{eq:2})};
+        \node (attXY) [process, below of = PhiPrime, yshift = 3mm] {\texttt{x = x + a} \\ \texttt{y = y + a}};
+        \node (calcDelta) [process, below of = attXY, xshift = -10mm] {Calculate \texttt{delta} (\texttt{delta} = $max\abs{\phi^\prime - \phi}$)};
+        \node (swap) [process, below of = calcDelta, yshift = 2mm] {Swap the elements of $\phi \texttt{[][]}$ and $\phi^\prime \texttt{[][]}$};
+
+        \node (plot) [io, below of = swap] {Plot $\phi\texttt{[][]}$ as \textit{density plot}};
+        \node (stop) [startstop, below of = plot, yshift = 4mm] {Finished};
+
+        \draw [arrow] (start) -- (constants);
+        \draw [arrow] (constants) -- (initialize);
+        \draw [arrow] (initialize) -- (forLoop);
+        \path [line]  (targetLoop) -- node[anchor = south] {no}(forLoop);
+        \path [line]  (targetLoop) -- (-7.54, -5.1) -- node[anchor = east]{yes}(-7.54, -12.1) -- (plot);
+
+        \draw [arrow] (forLoop) -- (PhiPrime);
+        \draw [arrow] (PhiPrime) -- (attXY);
+        \path [line] (attXY)  -- (-2.6,-7.85) -- node[anchor = east]{inside loop}(-2.6, -5.6);
+
+        \path [line]  (forLoop) -- (5, -5.1) -- node[anchor = west]{loop finished}(5, -9.25) -- (calcDelta);
+        \draw [arrow] (calcDelta) -- (swap);
+        \path [line]  (swap) -- node[anchor = south]{verify condition}(-5.64, -10.6) -- (targetLoop);
+
+        \draw [arrow] (plot) -- (stop);
+      \end{tikzpicture}
+    \end{tk3}
+    \caption{Flowchart of the program \texttt{laplace.py}}
+  \end{figure}
+
+
+\end{document}

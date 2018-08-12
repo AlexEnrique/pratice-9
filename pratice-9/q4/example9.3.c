@@ -3,24 +3,38 @@
 #include <math.h>
 #include <string.h>
 
-#define OUTPUT_FNAME "ex4.dat"
-#define SCRIPT_NAME "script.gnu"
+#define STD_OUTPUT_FNAME "diffus.dat"
+#define SCRIPT_NAME "diffus.gnuscript"
 #define BUFF_SIZE 70
 
 // Functions
 void swap(double **Temp, double **__Temp, int Ngrid);
-void createGnuplotScript(double tEnd);
+void createGnuplotScript(char *filename, double tEnd);
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
-    printf( "========================================================================\n"   );
-    printf( "= ERROR: you have to pass the end time via command line                =\n"   );
-    printf( "= Call the programa and write the end time after the name              =\n"   );
-    printf( "= \t(example: $ ./program.x 3.1415)                                =\n"       );
-    printf( "= The above example calls the program passing \"3.1415\" as the end time =\n" );
-    printf( "========================================================================\n"   );
-    printf("\a");
+    printf( "===============================================================================\n"       );
+    printf( "= ERROR: you have to pass the end time via command line                       =\n"       );
+    printf( "= Call the programa and write the end time after the name                     =\n"       );
+    printf( "= \t(example: $ ./programname.x 3.1415)                                   =\n"           );
+    printf( "= The above example calls the program passing \"3.1415\" as the end time        =\n"     );
+    printf( "=                                                                             =\n"       );
+    printf( "= You can pass others parameters via command line. The posibilities are:      =\n"       );
+    printf( "= the \"file name\" and a \"plot option\", as show below:                         =\n"   );
+    printf( "=                                                                             =\n"       );
+    printf( "=       $ ./programname.x <tEnd> <plot option> <file name>                    =\n"       );
+    printf( "=                                                                             =\n"       );
+    printf( "= If <plot option> is '1', the program will call the gnuplot, otherwise, no.  =\n"       );
+    printf( "= Also, if the gnuplot will be call, the program creates a file called \\      =\n"      );
+    printf( "= \"diffus.gnuscript\" at the current folder.                                   =\n"     );
+    printf( "=                                                                             =\n"       );
+    printf( "= <file name> could be any string representing the output file name or \'-1\'.  =\n"     );
+    printf( "= If you pass '-1', the program will output the file as \"diffus.t=<tEnd>\"     =\n"     );
+    printf( "= In the case of <file name> not beign passed, the program will output a file =\n"       );
+    printf( "= called \"diffus.dat\".                                                        =\n"     );
+    printf( "===============================================================================\n"       );
 
+    printf("\a");
     return 0;
   }
 
@@ -76,7 +90,16 @@ int main(int argc, char *argv[]) {
   free(__Temp);
 
   // Output the calculated data to a file
-  FILE *fp = fopen(OUTPUT_FNAME, "w");
+  char *filename = malloc(BUFF_SIZE * sizeof(*filename));
+  if (argc > 3)
+    if (strcmp(*(argv + 3), "-1") == 0)
+      snprintf(filename, BUFF_SIZE, "diffus.t=%s", *(argv + 1));
+    else
+      filename = *(argv + 3);
+  else
+    filename = STD_OUTPUT_FNAME;
+
+  FILE *fp = fopen(filename, "w");
 
   for (int i = 0; i < Ngrid; i++) {
     fprintf(fp, "%d  %lf\n", i, Temp[i]);
@@ -85,9 +108,13 @@ int main(int argc, char *argv[]) {
   fclose(fp);
   free(Temp);
 
-  createGnuplotScript(tEnd);
-  system("gnuplot < script.gnu --persist");
+  if (argc > 2 && strcmp(*(argv + 2), "1") == 0) {
+    createGnuplotScript(filename, tEnd);
+    system("gnuplot < diffus.gnuscript --persist");
+  }
 
+  if (argc > 3)
+    free(filename);
   return 0;
 }
 
@@ -97,17 +124,18 @@ void swap(double **Temp, double **__Temp, int Ngrid) {
   }
 }
 
-void createGnuplotScript(double tEnd) {
+void createGnuplotScript(char *filename, double tEnd) {
   char *buffer = malloc(BUFF_SIZE * sizeof(*buffer));
   FILE *script = fopen(SCRIPT_NAME, "w");
 
+  fprintf(script, "set title \"Diffusion Equation for heat\"\n");
   fprintf(script, "set xlabel \"x\"\n");
   fprintf(script, "set ylabel \"T\"\n");
 
   fprintf(script, "set xtics auto\n");
   fprintf(script, "set ytics auto\n");
 
-  snprintf(buffer, BUFF_SIZE, "plot '%s' title 'T(x,t), for t = %.3lf' with line lt 7 lw 1.7", OUTPUT_FNAME, tEnd);
+  snprintf(buffer, BUFF_SIZE, "plot '%s' title 'T(x,t), for t = %.3lf' with line lt 7 lw 1.7", filename, tEnd);
   fprintf(script, "%s\n", buffer);
 
   fclose(script);
