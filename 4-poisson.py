@@ -32,6 +32,7 @@ while (delta > target):
                                     + rho[i,j] / (4)
 
     delta = max(abs(phi-phiprime))
+    print(delta)
 
     phi, phiprime = phiprime, phi
 
