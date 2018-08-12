@@ -7,6 +7,7 @@
 #define SCRIPT_NAME "script.gnu"
 #define BUFF_SIZE 70
 
+// Functions
 void swap(double **Temp, double **__Temp, int Ngrid);
 void createGnuplotScript(double tEnd);
 
@@ -19,7 +20,7 @@ int main(int argc, char *argv[]) {
     printf( "= The above example calls the program passing \"3.1415\" as the end time =\n" );
     printf( "========================================================================\n"   );
     printf("\a");
-    
+
     return 0;
   }
 
