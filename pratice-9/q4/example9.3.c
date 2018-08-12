@@ -13,6 +13,7 @@ void createGnuplotScript(char *filename, double tEnd);
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
+    // Those "printf's" serves as instructions, so we do not need to comment; just read the "printf's".
     printf( "===============================================================================\n"       );
     printf( "= ERROR: you have to pass the end time via command line                       =\n"       );
     printf( "= Call the programa and write the end time after the name                     =\n"       );
