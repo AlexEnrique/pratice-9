@@ -4,5 +4,43 @@
 \begin{document}
   \PraticeQuestion{9}{4}
 
-  
+  O método FTCS (\textit{foward-time centered-space}) consiste numa forma de se transformar uma equação diferencial partial dependente de uma variável denotada tempo ($t$) e uma outra  variável, a qual vamos chamar posição\footnote{A generalização para mais outra variáveis "espaciais" é feita trivialmente, trocando-se $\pdv{x}$ por $\grad$.}
+
+  Seja
+  \begin{equation}
+    \pdv{T}{t} = f(T(t,x), \pdv*[2]{T}{x}, t, x)
+  \end{equation}
+  a equação que desejamos resolver. Comecemos por truncar a série de Taylor em primeira ordem, de forma a trocar $\pdv*[2]{T}{x}$ por
+  \begin{equation*}
+    \pdv[2]{T}{x} (t, x) = \frac{T(t, x-a) + T(t, x+a) - 2T(t,x)}{a^2}.
+  \end{equation*}
+
+  Para cada $x$ fixo, temos
+  \begin{equation*}
+    \pdv{T}{t} (t,x) = f(T(t,x), T(t, x-a), T(t, x+a), t, x).
+  \end{equation*}
+
+  Da forma como temos a equação acima, para cada $x$, $t$ varia de forma independete de $x$, de tal forma que podemos identificar a derivada parcial com relação ao tempo com a derivada total. Estamos, então, na presença de uma equação diferencial ordinária (EDO). Podemos fazer uso dos métodos já conhecidos para a solução de EDO's.
+
+  Como truncamos a série em primeira ordem, nosso erro no cálculo de $\pdv*[2]{T}{x}$ é de segunda ordem, de forma que utilizarmos um método com erro de terceira ordem ou mais (RK2 ou RK4, por exemplo), não nos dará melhores resultados que um método cujo erro é de primeira ordem (Euler, por exemplo, cujo truncamente ocorre em primeira ordem também).
+
+  A seguir apresentamos o resultado obtido para algumas temperaturas. O programa feito (disponível em \url{https://github.com/AlexEnrique/pratice-9-and-10}) fora feito de forma diferente do pedido pelo exercício. Explicaremos o motivo de tal escolha.
+
+  \newpage
+  Ao construir o programa, fizemos uso da técnica de \textit{passagem de argumentos via linha de comando}. Basicamente, passamos argumento para o programa diretamente na hora de chamá-lo, escrevendo-os logo após o comando de execução do programa. Por exemplo, digitar \texttt{./programa.x 3.12 22 a} chama o programa de nome \texttt{programa.x}, passando os argumentos \texttt{3.12, 22} e \texttt{a} para o programa. Tais argumentos são lidos e podem ser utilizados pelo programa da forma como se desejar.
+
+  Para fazermos isso, definimos a função \texttt{main} da seguinte forma
+  \begin{lstlisting}
+    int main (int argc, char *argv[]);
+  \end{lstlisting}
+  A variável \texttt{argc} é responsável por contar o número de parâmetros passados via linha de comando, somado a 1. Esse 1 a mais se refere a própria chamada do programa. Os parâmetros passados são armazenados como um tipo \texttt{char *} no array \texttt{argv[]}. O primeiro elemento deste array, \texttt{argv[0]} guarda a chamada do programa (para o exemplo anterior, \texttt{argv[0] == ./programa.x}). Os demais elementos são armazenados na ordem em que foram passados.
+  Interessante citar a opção de se utilizar as funções \texttt{atoi()} e \texttt{atof()} (e outras) da biblioteca \texttt{<string.h>} para converter tipos \texttt{char *} em inteiros e pontos flutuantes (dupla precisão), o que nos dá maiores opções para a passagem de parâmetros via linha de comando.
+
+  Escolheu-se aceitar 3 parâmetros: o tempo final (denominado \texttt{tEnd}), uma opção de plotagem (\texttt{<plot option>}) e o nome do arquivo de (dados de) saída (\texttt{<file name>}). Requer-se que, pelo menos o parâmetro de tempo final seja passado. Com efeito, se não se passa tal parâmetro, a seguinte mensagem de erro é impressa na tela:
+  \begin{figure}[h]
+    \caption{title}
+  \end{figure}
+
+
+
 \end{document}
