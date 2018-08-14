@@ -38,9 +38,31 @@
 
   Escolheu-se aceitar 3 parâmetros: o tempo final (denominado \texttt{tEnd}), uma opção de plotagem (\texttt{<plot option>}) e o nome do arquivo de (dados de) saída (\texttt{<file name>}). Requer-se que, pelo menos o parâmetro de tempo final seja passado. Com efeito, se não se passa tal parâmetro, a seguinte mensagem de erro é impressa na tela:
   \begin{figure}[h]
-    \caption{title}
+    \center
+    \includegraphics[scale = .35]{outputq4}
   \end{figure}
 
 
+  \newpage
+  Optou-se por fazer uso de tal método na criação do programa de forma a fazer um programa de uso mais amplo e, em certo sentido, mais simples. Para se fazer o que se pede no enunciado do exercício, bastaria criar um outro código que chamasse o mesmo programa e passasse os valores requeridos de \texttt{tEnd}. Abaixo temos um exemplo (quase que no formato de um pseudo-código).
+  \begin{lstlisting}
+    int main () {
+      double t[] = [t1, t2, t3]; // colocar os tempos requeridos
+
+      for (i = 0; i < t.length; i++) {
+        snprintf(buffer, BUFFER_SIZE, "./program.exe %lf 0 -1", t[i]);
+        system(buffer) // passa a string buffer para o terminal, como comando
+      }
+    }
+  \end{lstlisting}
+
+  O reaproveitamento do programa se torna maior com o uso dos argumentos da função main().
+
+  Abaixo temos um gráfico para os três valores de tempo pedidos no enunciado.
+
+  \begin{figure}[h]
+    \includegraphics[scale = 1.0]{q4.eps}
+    \caption{Solução para a equação de difussão}
+  \end{figure}
 
 \end{document}
