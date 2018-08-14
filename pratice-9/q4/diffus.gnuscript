@@ -1,0 +1,6 @@
+set title "Diffusion Equation for heat"
+set xlabel "x"
+set ylabel "T"
+set xtics auto
+set ytics auto
+plot 'diffus.dat' title 'T(x,t), for t = 0.400' with line lt 7 lw 1.7

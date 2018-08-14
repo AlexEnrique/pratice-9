@@ -1,0 +1,31 @@
+\input{../../std.tex}
+
+\begin{document}
+  \PraticeQuestion{10}{2}
+
+  Utilizando o programa \texttt{ising2d.f}, calculou-se, via Monte Carlo com o Algoritmo de Metropolis, o valor da magnetização média absoluta $\ev{\abs{M}}$, variando-se a temeperatura ($\beta$, equivalentemente).
+
+  A solução de Onsager nos dá o valor da transição de fase:
+  \begin{equation*}
+    \beta_c = \frac{\ln(1+ \sqrt{2})}{2J} .
+  \end{equation*}
+
+
+  A temeperatura de transição de fase se dá em $2.269185314$ (unidades arbitrárias utilizadas no programa, isto é, $k = 1$ e $J = 1$). Variando-se $\beta$ de 0.34 até 1.0, é passamos pela transição de fase, de tal modo que devemos ver uma curva tentendo para uma descontinuidade em tal temeperatura.
+
+  Na verdade, não se vê de fato tal descontinuidade por conta do \textit{efeito de rede finita}. Se se fizer, por outro lado, um \textit{finite size scalling}, aumentando-se $N$, de modo a determinar o valor do observável no limite termodinâmico, o resultado se aproximará da solução exata conhecida.
+
+  Abaixo temos o gráfico obtido, em comparação com a solução exata, em vermelho.
+
+  \begin{figure}[h]
+    \includegraphics[scale = 1.0]{Mabs.eps}
+  \end{figure}
+
+  \newpage
+  Da figura, vê-se que acima da temperatura de transição, o valor do observável tende para zero, mas se desvia do teórico esperado. Abaixo da temperatura crítica, por outro lado, temos uma grande concordância com o resultado teórico.
+
+  Isso nos diz que o resultado encontrado nos permite inferir a cerca da solução teórica, corroborando para a mesma.
+
+  Como veremos na questão 4, o resultado numérico se torna mais fiél ao resultado exato quando $N$ aumenta.
+
+\end{document}
